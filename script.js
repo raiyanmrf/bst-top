@@ -9,7 +9,7 @@ const Node = (data, parent = null, right = null, left = null) => {
 
 const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
   const array = Array.from(new Set(arr)).sort((a, b) => a - b);
-  const root = Node(array[Math.floor(array.length / 2)] || null);
+  let root = Node(array[Math.floor(array.length / 2)] || null);
   buildTree();
 
   function buildTree(i = 0, node = root) {
@@ -44,32 +44,83 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
 
     if (node.data === value) {
       const parent = node.parent;
+      let currentNode = node;
 
       //root
       if (!parent) {
-        if (!node.left && !node.right) root = null;
+        if (!node.left && !node.right) return (root = null);
+
+        //leaf node
+
+        // no left child
         if (!node.left) {
-          let currentNode = node;
+          currentNode = node.right;
           while (currentNode.left) {
             currentNode = currentNode.left;
           }
 
-          currentNode.parent.right = null;
-          currentNode.parent = parent;
-          parent.right = currentNode;
-          currentNode.left = node.left;
-          currentNode.right = node.right;
+          console.log(currentNode);
+          currentNode.parent.left = null;
         }
-      }
 
-      //leaf node
-      if (!node.left && !node.right) {
-        if (node.data < parent.data) parent.left = null;
-        else parent.right = null;
+        // left child
+        else {
+          currentNode = node.left;
+          while (currentNode.right) {
+            currentNode = currentNode.right;
+          }
+
+          currentNode.parent.right = null;
+        }
+
+        currentNode.parent = null;
+        //check ciruclar bug
+        let left =
+          node.left && node.left.data === currentNode.data ? null : node.left;
+        let right =
+          node.right && node.right.data === currentNode.data
+            ? null
+            : node.right;
+        currentNode.left = left;
+        currentNode.right = right;
+
+        if (currentNode.left) currentNode.left.parent = currentNode;
+        if (currentNode.right) currentNode.right.parent = currentNode;
+        root = currentNode;
+
+        console.log(
+          `currentNode data ${currentNode.data} parent data ${currentNode.parent?.data} currentNode left data ${currentNode.left?.data} currentNode right data ${currentNode.right?.data} `,
+        );
         return;
       }
 
-      let currentNode = node;
+      //leaf node
+      if (!currentNode.left && !currentNode.right) {
+        if (currentNode.data < parent.data) parent.left = null;
+        else parent.right = null;
+
+        console.log(
+          `LEAF: data ${currentNode.data} parent ${currentNode.parent?.data} left data ${currentNode.left?.data}  right data ${currentNode.right?.data} `,
+        );
+        return;
+      }
+
+      // left child only
+      if (!node.right) {
+        if (node.data < parent.data) parent.left = node.left || null;
+        else parent.right = node.left || null;
+        node.left.parent = parent;
+        return;
+      }
+
+      // right child only
+      if (!node.left) {
+        if (node.data < parent.data) parent.left = node.right || null;
+        else parent.right = node.right || null;
+
+        node.right.parent = parent;
+        return;
+      }
 
       // node smaller than its parent
       if (value < parent.data) {
@@ -78,20 +129,17 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
           currentNode = currentNode[`${child}`];
         }
 
-        // console.log(
-        //   `arg ${value} ~ node ${node.data} ~ parent ${parent.data} ~ curr ${currentNode.data}`,
-        // );
-        // console.log(
-        //   `arg ${value} ~ nodeleft ${node.left} ~ parentleft ${parent.left} ~ currleft ${currentNode.left}`,
-        // );
-        // console.log(
-        //   `arg ${value} ~ noderight ${node.right} ~ parentright ${parent.right} ~ currleft ${currentNode.right}`,
-        // );
         currentNode.parent[`${child}`] = null;
         currentNode.parent = parent;
         parent.left = currentNode;
         currentNode.left = node.left;
         currentNode.right = node.right;
+        currentNode.left.parent = currentNode;
+        currentNode.right.parent = currentNode;
+
+        console.log(
+          `currentNode data ${currentNode.data} parent data ${currentNode.parent?.data} currentNode left data ${currentNode.left?.data} currentNode right data ${currentNode.right?.data} `,
+        );
       }
       // node larger than its parent
       if (value > parent.data) {
@@ -105,6 +153,11 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
         parent.right = currentNode;
         currentNode.left = node.left;
         currentNode.right = node.right;
+        currentNode.left.parent = currentNode;
+        currentNode.right.parent = currentNode;
+        console.log(
+          `currentNode data ${currentNode.data} parent data ${currentNode.parent?.data} currentNode left data ${currentNode.left?.data} currentNode right data ${currentNode.right?.data} `,
+        );
       }
 
       return;
@@ -133,5 +186,19 @@ console.log(bst.includes(6));
 console.log(bst.includes(10));
 console.log(bst.insert(10));
 bst.prettyPrint();
+console.log(bst.remove(5));
 console.log(bst.remove(1));
+
+bst.prettyPrint();
+console.log(bst.remove(10));
+console.log(bst.remove(4));
+bst.prettyPrint();
+console.log(bst.remove(3));
+
+bst.prettyPrint();
+console.log(bst.remove(6));
+
+bst.prettyPrint();
+console.log(bst.remove(2));
+
 bst.prettyPrint();
