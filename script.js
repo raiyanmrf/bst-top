@@ -39,6 +39,32 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
     if (value < node.data) return includes(value, node.left);
     if (value > node.data) return includes(value, node.right);
   }
+
+  function height(value, node = root) {
+    if (!node) return undefined;
+    if (node.data === value) {
+      let level = [node];
+      let count = 0;
+      do {
+        let nextLevel = [];
+
+        level.forEach((item, i) => {
+          if (item) {
+            item.left && nextLevel.push(item.left);
+            item.right && nextLevel.push(item.right);
+          }
+        });
+
+        nextLevel.length > 0 && count++;
+
+        level = [...nextLevel];
+      } while (level.length > 0);
+
+      return count;
+    }
+    if (value < node.data) return height(value, node.left);
+    if (value > node.data) return height(value, node.right);
+  }
   function deleteItem(value, node = root) {
     if (!node) return false;
 
@@ -177,6 +203,7 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
   };
 
   function levelOrderForEach(callback = null, level = [root]) {
+    if (!callback) throw new Error("Invalid Arguments.");
     if (level.length < 1) return;
     let nextLevel = [];
     level.forEach((item, i) => {
@@ -221,6 +248,7 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
     preOrderForEach,
     inOrderForEach,
     postOrderForEach,
+    height,
   };
 };
 
@@ -230,20 +258,27 @@ console.log(bst.includes(1));
 console.log(bst.includes(6));
 console.log(bst.includes(10));
 console.log(bst.insert(10));
+console.log(bst.insert(11));
 bst.prettyPrint();
 // bst.levelOrderForEach(function (item) {
 //   console.log(item.data);
 // });
 
-bst.preOrderForEach(function (item) {
-  console.log(item.data);
-});
-bst.inOrderForEach(function (item) {
-  console.log(item.data);
-});
-bst.postOrderForEach(function (item) {
-  console.log(item.data);
-});
+// bst.preOrderForEach(function (item) {
+//   console.log(item.data);
+// });
+// bst.inOrderForEach(function (item) {
+//   console.log(item.data);
+// });
+// bst.postOrderForEach(function (item) {
+//   console.log(item.data);
+// });
+
+console.log(bst.height(4));
+console.log(bst.height(5));
+console.log(bst.height(1));
+console.log(bst.height(10));
+console.log(bst.height(11));
 
 // console.log(bst.deleteItem(5));
 // console.log(bst.deleteItem(1));
