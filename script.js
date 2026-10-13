@@ -190,7 +190,38 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
     levelOrderForEach(callback, nextLevel);
   }
 
-  return { prettyPrint, includes, insert, deleteItem, levelOrderForEach };
+  function preOrderForEach(callback = null, node = root) {
+    if (!node) return;
+
+    callback(node);
+
+    if (node.left) preOrderForEach(callback, node.left);
+    if (node.right) preOrderForEach(callback, node.right);
+  }
+  function inOrderForEach(callback = null, node = root) {
+    if (!node) return;
+
+    if (node.left) preOrderForEach(callback, node.left);
+    callback(node);
+    if (node.right) preOrderForEach(callback, node.right);
+  }
+  function postOrderForEach(callback = null, node = root) {
+    if (!node) return;
+
+    if (node.left) preOrderForEach(callback, node.left);
+    if (node.right) preOrderForEach(callback, node.right);
+    callback(node);
+  }
+  return {
+    prettyPrint,
+    includes,
+    insert,
+    deleteItem,
+    levelOrderForEach,
+    preOrderForEach,
+    inOrderForEach,
+    postOrderForEach,
+  };
 };
 
 const bst = Tree();
@@ -200,7 +231,17 @@ console.log(bst.includes(6));
 console.log(bst.includes(10));
 console.log(bst.insert(10));
 bst.prettyPrint();
-bst.levelOrderForEach(function (item) {
+// bst.levelOrderForEach(function (item) {
+//   console.log(item.data);
+// });
+
+bst.preOrderForEach(function (item) {
+  console.log(item.data);
+});
+bst.inOrderForEach(function (item) {
+  console.log(item.data);
+});
+bst.postOrderForEach(function (item) {
   console.log(item.data);
 });
 
