@@ -65,6 +65,14 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
     if (value < node.data) return height(value, node.left);
     if (value > node.data) return height(value, node.right);
   }
+  function depth(value, node = root, count = 0) {
+    if (!node) return undefined;
+    if (node.data === value) {
+      return count;
+    }
+    if (value < node.data) return depth(value, node.left, count + 1);
+    if (value > node.data) return depth(value, node.right, count + 1);
+  }
   function deleteItem(value, node = root) {
     if (!node) return false;
 
@@ -249,6 +257,7 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
     inOrderForEach,
     postOrderForEach,
     height,
+    depth,
   };
 };
 
@@ -274,11 +283,18 @@ bst.prettyPrint();
 //   console.log(item.data);
 // });
 
-console.log(bst.height(4));
-console.log(bst.height(5));
-console.log(bst.height(1));
-console.log(bst.height(10));
-console.log(bst.height(11));
+// console.log(bst.height(4));
+// console.log(bst.height(5));
+// console.log(bst.height(1));
+// console.log(bst.height(10));
+// console.log(bst.height(11));
+// console.log(bst.height(1113)
+console.log(bst.depth(4));
+console.log(bst.depth(5));
+console.log(bst.depth(1));
+console.log(bst.depth(10));
+console.log(bst.depth(11));
+console.log(bst.depth(171));
 
 // console.log(bst.deleteItem(5));
 // console.log(bst.deleteItem(1));
