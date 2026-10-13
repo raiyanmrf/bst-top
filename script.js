@@ -39,7 +39,7 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
     if (value < node.data) return includes(value, node.left);
     if (value > node.data) return includes(value, node.right);
   }
-  function remove(value, node = root) {
+  function deleteItem(value, node = root) {
     if (!node) return false;
 
     if (node.data === value) {
@@ -163,8 +163,8 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
       return;
     }
 
-    if (value < node.data) return remove(value, node.left);
-    if (value > node.data) return remove(value, node.right);
+    if (value < node.data) return deleteItem(value, node.left);
+    if (value > node.data) return deleteItem(value, node.right);
   }
   const prettyPrint = (node = root, prefix = "", isLeft = true) => {
     if (node === null || node === undefined) {
@@ -176,7 +176,21 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
     prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
   };
 
-  return { prettyPrint, includes, insert, remove };
+  function levelOrderForEach(callback = null, level = [root]) {
+    if (level.length < 1) return;
+    let nextLevel = [];
+    level.forEach((item, i) => {
+      if (item) {
+        callback && callback(item);
+        item.left && nextLevel.push(item.left);
+        item.right && nextLevel.push(item.right);
+      }
+    });
+
+    levelOrderForEach(callback, nextLevel);
+  }
+
+  return { prettyPrint, includes, insert, deleteItem, levelOrderForEach };
 };
 
 const bst = Tree();
@@ -186,19 +200,23 @@ console.log(bst.includes(6));
 console.log(bst.includes(10));
 console.log(bst.insert(10));
 bst.prettyPrint();
-console.log(bst.remove(5));
-console.log(bst.remove(1));
+bst.levelOrderForEach(function (item) {
+  console.log(item.data);
+});
 
-bst.prettyPrint();
-console.log(bst.remove(10));
-console.log(bst.remove(4));
-bst.prettyPrint();
-console.log(bst.remove(3));
+// console.log(bst.deleteItem(5));
+// console.log(bst.deleteItem(1));
 
-bst.prettyPrint();
-console.log(bst.remove(6));
+// bst.prettyPrint();
+// console.log(bst.deleteItem(10));
+// console.log(bst.deleteItem(4));
+// bst.prettyPrint();
+// console.log(bst.deleteItem(3));
 
-bst.prettyPrint();
-console.log(bst.remove(2));
+// bst.prettyPrint();
+// console.log(bst.deleteItem(6));
 
-bst.prettyPrint();
+// bst.prettyPrint();
+// console.log(bst.deleteItem(2));
+
+// bst.prettyPrint();
