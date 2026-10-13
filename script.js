@@ -191,7 +191,7 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
   }
 
   function preOrderForEach(callback = null, node = root) {
-    if (!node) return;
+    if (!callback) throw new Error("Invalid Arguments.");
 
     callback(node);
 
@@ -199,14 +199,14 @@ const Tree = (arr = [1, 2, 3, 4, 4, 5, 6]) => {
     if (node.right) preOrderForEach(callback, node.right);
   }
   function inOrderForEach(callback = null, node = root) {
-    if (!node) return;
+    if (!callback) throw new Error("Invalid Arguments.");
 
     if (node.left) preOrderForEach(callback, node.left);
     callback(node);
     if (node.right) preOrderForEach(callback, node.right);
   }
   function postOrderForEach(callback = null, node = root) {
-    if (!node) return;
+    if (!callback) throw new Error("Invalid Arguments.");
 
     if (node.left) preOrderForEach(callback, node.left);
     if (node.right) preOrderForEach(callback, node.right);
